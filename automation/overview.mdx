@@ -1,0 +1,101 @@
+---
+title: "Automation overview"
+description: "Configure pipelines that run sequences of actions automatically when system events occur."
+---
+
+Automation — called **Actions** in the LLT interface — lets you define pipelines that execute automatically when something happens on your system: plugging in power, connecting a display, launching a game, or even just reaching a certain time of day.
+
+<Note>
+  LLT must be running in the background for Actions to work. If you close LLT completely, no automation pipelines will fire. Use the **Minimize to tray** option in settings to keep LLT running without showing the main window.
+</Note>
+
+## How pipelines work
+
+Each automation pipeline consists of two parts:
+
+- **Trigger** — the event that causes the pipeline to run (for example, AC adapter connected)
+- **Steps** — an ordered list of actions that execute in sequence when the trigger fires
+
+When a trigger event is detected, LLT runs each step in order. If one step fails, the remaining steps still execute. You can add as many steps as you need to a single pipeline.
+
+Pipelines without a trigger are treated as **Quick Actions** — they can be run manually from the UI or via the CLI, or referenced from other pipelines using the Quick Action step.
+
+## Getting started
+
+<Steps>
+  <Step title="Open the Automation tab">
+    Launch LLT and click the **Automation** tab in the left sidebar.
+  </Step>
+  <Step title="Create a new pipeline">
+    Click the **+** button to add a new pipeline. Give it a descriptive name.
+  </Step>
+  <Step title="Choose a trigger">
+    Select a trigger from the dropdown. This is the event that will start your pipeline. See [Triggers](/automation/triggers) for the full list.
+  </Step>
+  <Step title="Add steps">
+    Click **Add step** and choose the actions you want to run. Steps execute in the order they appear. See [Steps](/automation/steps) for the full list.
+  </Step>
+  <Step title="Save and test">
+    Save the pipeline. Trigger the event manually (e.g. unplug and replug the AC adapter) to verify it works as expected.
+  </Step>
+</Steps>
+
+## Example pipelines
+
+<AccordionGroup>
+  <Accordion title="Switch to Performance mode when AC power connects">
+    **Trigger:** AC adapter connected
+
+    **Steps:**
+    1. Power Mode → Performance
+  </Accordion>
+
+  <Accordion title="Switch to Quiet mode and dim the display when on battery">
+    **Trigger:** AC adapter disconnected
+
+    **Steps:**
+    1. Power Mode → Quiet
+    2. Display Brightness → 40%
+  </Accordion>
+
+  <Accordion title="Enable Performance mode when a game launches">
+    **Trigger:** Games are running
+
+    **Steps:**
+    1. Power Mode → Performance
+    2. Show Notification → "Game mode activated"
+  </Accordion>
+
+  <Accordion title="Run a script when connecting to a specific Wi-Fi network">
+    **Trigger:** Wi-Fi connected (filter by SSID)
+
+    **Steps:**
+    1. Run → `C:\Scripts\work-setup.bat`
+  </Accordion>
+</AccordionGroup>
+
+## Key concepts
+
+### Trigger vs. state matching
+
+Most triggers fire both when the underlying event occurs *and* when LLT starts up or resumes from sleep and the condition is already true. For example, if you create a pipeline for "AC adapter connected" and LLT starts while the adapter is already plugged in, the pipeline runs immediately.
+
+### Pipeline exclusivity
+
+By default, only one pipeline can run at a time. If a new trigger fires while a pipeline is already running, the running pipeline is cancelled.
+
+### Combining triggers with And
+
+Use the **And** trigger type to compose multiple conditions. The pipeline fires when any of the combined trigger events occurs, but only if all other conditions in the group are currently true at that moment.
+
+### Quick Actions
+
+A pipeline with no trigger is a Quick Action. You can:
+
+- Run it manually from the Automation tab
+- Reference it from another pipeline using the **Quick Action** step
+- Invoke it from the command line with `llt quickAction <name>`
+
+<Tip>
+  Quick Actions are a good way to define reusable step sequences that you want to share across multiple triggered pipelines.
+</Tip>

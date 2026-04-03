@@ -1,0 +1,379 @@
+---
+title: "CLI command reference"
+description: "Complete reference for all llt.exe commands, subcommands, arguments, and flags."
+---
+
+All commands follow the pattern:
+
+```bash
+llt.exe <command> [subcommand] [arguments] [flags]
+```
+
+Every command and most subcommands have a short alias. Both the full name and the alias are shown in each section below.
+
+<Note>
+LLT must be running in the background and the CLI option must be enabled in **Settings**. See the [CLI overview](/cli/overview) for setup instructions.
+</Note>
+
+---
+
+## quickAction (qa)
+
+Run a named Quick Action or list all available Quick Actions.
+
+**Aliases:** `quickAction`, `qa`
+
+### List Quick Actions
+
+```bash
+llt.exe quickAction --list
+llt.exe qa -l
+```
+
+Prints the names of all configured Quick Actions, one per line.
+
+<ParamField path="--list" type="flag">
+  List all available Quick Actions. Short alias: `-l`.
+</ParamField>
+
+### Run a Quick Action
+
+```bash
+llt.exe quickAction <name>
+llt.exe qa <name>
+```
+
+Runs the Quick Action with the given name. The name must match exactly as it appears in LLT.
+
+<ParamField path="name" type="string" required>
+  The name of the Quick Action to run.
+</ParamField>
+
+**Examples:**
+
+```bash
+# List all Quick Actions
+llt.exe quickAction --list
+
+# Run a Quick Action named "Gaming Mode"
+llt.exe quickAction "Gaming Mode"
+
+# Using the alias
+llt.exe qa "Silent Work"
+```
+
+<Warning>
+Either `name` or `--list` must be specified. Running `llt.exe quickAction` with no arguments exits with an error.
+</Warning>
+
+---
+
+## feature (f)
+
+Read and write LLT feature values, or list all available features and their allowed values.
+
+**Aliases:** `feature`, `f`
+
+### List all features
+
+```bash
+llt.exe feature --list
+llt.exe f -l
+```
+
+Prints the names of all features supported on your device.
+
+<ParamField path="--list" type="flag">
+  List all supported features. Short alias: `-l`.
+</ParamField>
+
+### get (g)
+
+Get the current value of a feature.
+
+**Aliases:** `get`, `g`
+
+```bash
+llt.exe feature get <name>
+llt.exe f g <name>
+```
+
+Prints the current value of the named feature to standard output.
+
+<ParamField path="name" type="string" required>
+  The name of the feature to read. Use `feature --list` to see available feature names.
+</ParamField>
+
+**Examples:**
+
+```bash
+# Get the current power mode
+llt.exe feature get PowerMode
+
+# Using short aliases
+llt.exe f g PowerMode
+```
+
+### set (s)
+
+Set a feature to a specific value, or list the allowed values for a feature.
+
+**Aliases:** `set`, `s`
+
+#### List allowed values for a feature
+
+```bash
+llt.exe feature set <name> --list
+llt.exe f s <name> -l
+```
+
+Prints all valid values for the named feature.
+
+<ParamField path="name" type="string" required>
+  The name of the feature.
+</ParamField>
+
+<ParamField path="--list" type="flag">
+  List all valid values for the feature instead of setting one. Short alias: `-l`.
+</ParamField>
+
+**Example:**
+
+```bash
+# See what values PowerMode accepts
+llt.exe feature set PowerMode --list
+```
+
+#### Set a feature value
+
+```bash
+llt.exe feature set <name> <value>
+llt.exe f s <name> <value>
+```
+
+Sets the named feature to the specified value.
+
+<ParamField path="name" type="string" required>
+  The name of the feature to set.
+</ParamField>
+
+<ParamField path="value" type="string" required>
+  The value to apply. Use `feature set <name> --list` to see accepted values.
+</ParamField>
+
+**Examples:**
+
+```bash
+# List features to find available names
+llt.exe feature --list
+
+# See accepted values for a feature
+llt.exe feature set PowerMode --list
+
+# Set the power mode to Performance
+llt.exe feature set PowerMode Performance
+
+# Using short aliases
+llt.exe f s PowerMode Quiet
+```
+
+---
+
+## spectrum (s)
+
+Control the Spectrum per-key RGB keyboard backlight profile and brightness.
+
+**Aliases:** `spectrum`, `s`
+
+<Note>
+Spectrum commands apply to Spectrum per-key RGB keyboards only. For 4-zone RGB keyboards, use the [`rgb`](#rgb-r) command.
+</Note>
+
+### profile (p)
+
+Get or set the active Spectrum RGB profile.
+
+**Aliases:** `profile`, `p`
+
+#### Get the current profile
+
+```bash
+llt.exe spectrum profile get
+llt.exe s p g
+```
+
+Prints the index of the currently active Spectrum RGB profile.
+
+#### Set the profile
+
+```bash
+llt.exe spectrum profile set <profile>
+llt.exe s p s <profile>
+```
+
+Switches to the specified Spectrum RGB profile.
+
+<ParamField path="profile" type="integer" required>
+  The profile index to activate (integer).
+</ParamField>
+
+**Examples:**
+
+```bash
+# Get the current Spectrum profile
+llt.exe spectrum profile get
+
+# Switch to profile 2
+llt.exe spectrum profile set 2
+
+# Using short aliases
+llt.exe s p s 1
+```
+
+### brightness (b)
+
+Get or set the Spectrum RGB keyboard brightness.
+
+**Aliases:** `brightness`, `b`
+
+#### Get the current brightness
+
+```bash
+llt.exe spectrum brightness get
+llt.exe s b g
+```
+
+Prints the current Spectrum RGB brightness level.
+
+#### Set the brightness
+
+```bash
+llt.exe spectrum brightness set <brightness>
+llt.exe s b s <brightness>
+```
+
+Sets the Spectrum RGB keyboard brightness.
+
+<ParamField path="brightness" type="integer" required>
+  The brightness level to apply (integer).
+</ParamField>
+
+**Examples:**
+
+```bash
+# Get the current brightness
+llt.exe spectrum brightness get
+
+# Set brightness to 2
+llt.exe spectrum brightness set 2
+
+# Using short aliases
+llt.exe s b s 0
+```
+
+---
+
+## rgb (r)
+
+Get or set the preset for a 4-zone RGB keyboard backlight.
+
+**Aliases:** `rgb`, `r`
+
+<Note>
+This command applies to 4-zone RGB keyboards only. For Spectrum per-key RGB keyboards, use the [`spectrum`](#spectrum-s) command.
+</Note>
+
+### Get the current preset
+
+```bash
+llt.exe rgb get
+llt.exe r g
+```
+
+Prints the index of the currently active 4-zone RGB preset.
+
+### Set the preset
+
+```bash
+llt.exe rgb set <preset>
+llt.exe r s <preset>
+```
+
+Switches to the specified 4-zone RGB preset.
+
+<ParamField path="preset" type="integer" required>
+  The preset index to activate (integer).
+</ParamField>
+
+**Examples:**
+
+```bash
+# Get the current RGB preset
+llt.exe rgb get
+
+# Switch to preset 3
+llt.exe rgb set 3
+
+# Using short aliases
+llt.exe r s 1
+```
+
+---
+
+## Exit codes
+
+| Code | Constant | Meaning |
+|------|----------|---------|
+| `0` | Success | The command completed successfully. |
+| `-1` | `IpcConnectException` | Failed to connect. LLT is not running or the CLI setting is disabled in Settings. |
+| `-2` | `IpcException` | IPC error. LLT received the command but it failed — for example, an unsupported feature name or out-of-range value. |
+| `-99` | Unexpected error | An unhandled exception occurred in the CLI. |
+
+Error messages are written to **stderr**. On an interactive terminal, error output is displayed in red.
+
+**Handling exit codes in a batch script:**
+
+```batch
+llt.exe feature set PowerMode Performance
+if %ERRORLEVEL% EQU -1 (
+    echo LLT is not running or CLI is not enabled.
+) else if %ERRORLEVEL% EQU -2 (
+    echo Command failed: check feature name and value.
+) else if %ERRORLEVEL% NEQ 0 (
+    echo Unexpected error: %ERRORLEVEL%
+)
+```
+
+**Handling exit codes in PowerShell:**
+
+```powershell
+llt.exe feature set PowerMode Performance
+if ($LASTEXITCODE -eq -1) {
+    Write-Error "LLT is not running or CLI is not enabled."
+} elseif ($LASTEXITCODE -eq -2) {
+    Write-Error "Command failed: check feature name and value."
+} elseif ($LASTEXITCODE -ne 0) {
+    Write-Error "Unexpected error: $LASTEXITCODE"
+}
+```
+
+---
+
+## Alias reference
+
+| Command | Alias |
+|---------|-------|
+| `quickAction` | `qa` |
+| `feature` | `f` |
+| `feature get` | `f g` |
+| `feature set` | `f s` |
+| `spectrum` | `s` |
+| `spectrum profile` | `s p` |
+| `spectrum profile get` | `s p g` |
+| `spectrum profile set` | `s p s` |
+| `spectrum brightness` | `s b` |
+| `spectrum brightness get` | `s b g` |
+| `spectrum brightness set` | `s b s` |
+| `rgb` | `r` |
+| `rgb get` | `r g` |
+| `rgb set` | `r s` |

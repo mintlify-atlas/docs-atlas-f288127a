@@ -1,0 +1,147 @@
+---
+title: "FAQ"
+description: "Answers to common questions about Lenovo Legion Toolkit."
+---
+
+<AccordionGroup>
+
+  <Accordion title="Why do I get a message that Vantage is still running, even though I uninstalled it?">
+    Vantage installs three separate components:
+
+    1. Lenovo Vantage app
+    2. Lenovo Vantage Service
+    3. System Interface Foundation V2 Device
+
+    LLT detects processes from all three. If any remain after uninstalling, the warning will still appear.
+
+    The easiest fix is to go to **Settings** in LLT and use the disable toggles for Vantage, Legion Zone, and Hotkeys. This stops the processes without requiring a full uninstall.
+
+    If you want to remove them entirely, make sure all three components are uninstalled. You can check **Task Manager** for any processes containing `Vantage` or `ImController`. For help removing `ImController`, see [Uninstalling System Interface Foundation V2 Device](https://support.lenovo.com/us/en/solutions/HT506070).
+  </Accordion>
+
+  <Accordion title="Why is my antivirus reporting that the installer contains a virus, trojan, or malware?">
+    This is a false positive. LLT uses low-level Windows APIs to communicate with hardware, which some antivirus engines flag as suspicious behavior regardless of intent.
+
+    LLT is open source — you can review exactly what it does. All installers are built directly on GitHub with GitHub Actions, so the build process is fully transparent and auditable.
+
+    If you downloaded the installer from the official GitHub Releases page, the warning is a false positive and you can safely proceed.
+  </Accordion>
+
+  <Accordion title="Can I customize hotkeys?">
+    You can customize the **Fn+F9** hotkey from LLT settings. All other hardware hotkeys cannot be customized.
+  </Accordion>
+
+  <Accordion title="Can I customize the Conservation mode charge threshold?">
+    No. The Conservation mode threshold is set in firmware and cannot be changed:
+
+    - **60%** on 2021 models and earlier
+    - **80%** on 2022 models and later
+  </Accordion>
+
+  <Accordion title="Can I customize fans in Quiet, Balance, or Performance modes?">
+    No. Fan behavior in Quiet, Balance, and Performance modes is fixed in firmware. The only mode where fan curves can be adjusted is **Custom** (God Mode).
+  </Accordion>
+
+  <Accordion title="Why can't I switch to Performance or Custom power mode on battery?">
+    LLT aligns with Vantage and Legion Zone in not allowing Performance or Custom modes without an AC adapter. This is because power limits and related settings don't apply correctly on most devices when not connected to a full-power adapter, which leads to unpredictable behavior.
+
+    If you need these modes on battery anyway, use the `--allow-all-power-modes-on-battery` argument. See [Command-line arguments](/configuration/arguments) for how to set this up.
+
+    <Warning>
+    No support is provided for issues that occur only when using this argument.
+    </Warning>
+  </Accordion>
+
+  <Accordion title="Why does switching to Performance mode seem buggy when AI Engine is enabled?">
+    This is a known firmware issue on some BIOS versions where using Fn+Q in combination with AI Engine causes unexpected behavior. There is no workaround in LLT — the fix needs to come from Lenovo in a BIOS update.
+  </Accordion>
+
+  <Accordion title="Why am I getting an incompatible device message after a motherboard replacement?">
+    A replacement motherboard may not have the correct model number and serial number programmed. Try using [this LVAR recovery tutorial](https://laptopwiki.eu/laptopwiki/guides/lenovo/legion_bios_lvarrecovery) to restore them.
+
+    If that doesn't work, you can bypass the compatibility check with the `--skip-compat-check` argument. See [Command-line arguments](/configuration/arguments).
+
+    <Warning>
+    No support is provided for issues that occur only when using `--skip-compat-check`.
+    </Warning>
+  </Accordion>
+
+  <Accordion title="Why isn't a game detected, even though Actions are configured properly?">
+    LLT's game detection is built on top of Windows' own game detection system. LLT treats an executable as a game only when Windows itself classifies it as one.
+
+    A few things to check:
+
+    - If you've removed Xbox Game Bar from Windows, game detection will not work (there is approximately a 99.9% chance it won't function without it).
+    - You can manually mark any program as a game in Xbox Game Bar settings (**Win+G**).
+    - The full list of recognized games is stored in the registry at `HKEY_CURRENT_USER\System\GameConfigStore\Children`.
+  </Accordion>
+
+  <Accordion title="Can I use other RGB software while using LLT?">
+    Yes, generally. LLT automatically disables its own RGB controls when Vantage is running to prevent conflicts.
+
+    If you use third-party RGB software like [L5P-Keyboard-RGB](https://github.com/4JX/L5P-Keyboard-RGB) or [OpenRGB](https://openrgb.org/), disable LLT's RGB controls using the appropriate argument to avoid conflicts:
+
+    - `--force-disable-rgbkb` for 4-zone RGB keyboards
+    - `--force-disable-spectrumkb` for Spectrum per-key RGB keyboards
+
+    See [Command-line arguments](/configuration/arguments) for setup instructions.
+  </Accordion>
+
+  <Accordion title="Will iCue RGB keyboards be supported?">
+    No. Keyboards that require Corsair iCue are not supported by LLT. Check out [OpenRGB](https://openrgb.org/) for a third-party alternative.
+  </Accordion>
+
+  <Accordion title="Can I have more RGB effects or custom animations?">
+    LLT only exposes effects that are natively supported by the keyboard hardware. Custom software-rendered effects are not planned.
+
+    For more advanced RGB customization, check out [L5P-Keyboard-RGB](https://github.com/4JX/L5P-Keyboard-RGB) or [OpenRGB](https://openrgb.org/).
+  </Accordion>
+
+  <Accordion title="Can you add fan control to older laptop models?">
+    Fan control (Custom Mode) is only available on **Gen 7 (MY2022) and later** models. Older generations cannot be supported due to hardware and firmware limitations.
+  </Accordion>
+
+  <Accordion title="Why don't I see the custom tooltip when hovering the LLT tray icon?">
+    Custom tray tooltips are affected by changes Microsoft made to the Windows 10 and 11 taskbar. They don't always work reliably as a result. Keeping Windows up to date is the best available option — there is no fix within LLT itself.
+  </Accordion>
+
+  <Accordion title="How can I overclock or undervolt my CPU?">
+    LLT does not include CPU overclocking or undervolting controls. Use a dedicated tool instead:
+
+    - [Intel Extreme Tuning Utility (XTU)](https://www.intel.com/content/www/us/en/download/17881/intel-extreme-tuning-utility-intel-xtu.html) — the same tool used by Lenovo Vantage
+    - [ThrottleStop](https://www.techpowerup.com/download/techpowerup-throttlestop/) — a popular alternative with more fine-grained control
+  </Accordion>
+
+  <Accordion title="What if I overclocked my GPU too much and can't boot into Windows?">
+    You have two options:
+
+    1. Go into your BIOS and find an option similar to **Enable GPU Overclocking**. Disable it, boot into Windows, then re-enable the option.
+    2. Boot into **Safe Mode** and delete the file `gpu_oc.json` from `%LOCALAPPDATA%\LenovoLegionToolkit`. This resets the GPU overclock settings.
+  </Accordion>
+
+  <Accordion title="Why is my custom boot logo not appearing at startup?">
+    When you apply a boot logo, LLT verifies the image format and resolution and saves it to the UEFI partition. If LLT reports success but the logo doesn't appear, the UEFI firmware itself is not rendering it.
+
+    Try a different image — exported from a different image editor or saved in a different format. If the issue persists across multiple images, it is likely a BIOS version limitation.
+  </Accordion>
+
+  <Accordion title="Why do I see stuttering when using Smart Fn Lock?">
+    On some BIOS versions, toggling Fn Lock causes a brief stutter. Because Smart Fn Lock automates this toggle, it is affected by the same issue.
+
+    Try disabling the **"Fool proof Fn Lock"** option (or a similarly named setting) in your BIOS. Reports indicate this resolves the stutter when toggling Fn Lock.
+  </Accordion>
+
+  <Accordion title="Which generation is my laptop?">
+    Check the model number on your laptop or in System Information. Examples: `16ACH6H`, `16IAX7`.
+
+    The **last digit** of the model number indicates the generation:
+
+    | Last digit | Generation |
+    |---|---|
+    | 6 | Gen 6 (MY2021) |
+    | 7 | Gen 7 (MY2022) |
+    | 8 | Gen 8 (MY2023) |
+    | 9 | Gen 9 (MY2024) |
+  </Accordion>
+
+</AccordionGroup>

@@ -1,0 +1,93 @@
+---
+title: "Compatibility"
+description: "Supported Lenovo laptop generations, how to identify your model, known limitations, and conflicts with Lenovo software."
+---
+
+## Supported laptops
+
+LLT supports the following laptop series:
+
+- **Lenovo Legion**
+- **Ideapad Gaming**
+- **LOQ**
+- Chinese variants of the above
+
+<Warning>
+Support for other laptop models is not planned. Do not open compatibility requests for devices outside these series.
+</Warning>
+
+## Supported generations
+
+| Generation | Model year | Support level |
+|------------|------------|---------------|
+| Gen 9      | MY2024     | Full support  |
+| Gen 8      | MY2023     | Full support  |
+| Gen 7      | MY2022     | Full support  |
+| Gen 6      | MY2021     | Full support  |
+| Gen 5      | MY2020     | Partial — some features work |
+| Gen 4 and older | MY2019 and earlier | Not supported |
+
+Issues reported for devices older than Gen 6 are out of scope for this project.
+
+## How to identify your generation
+
+The last number in your laptop's model number indicates its generation.
+
+For example:
+- `16ACH6H` — ends in `6`, so this is a **Gen 6** laptop
+- `16IAX7` — ends in `7`, so this is a **Gen 7** laptop
+
+You can find your full model number on the sticker on the bottom of the laptop, in Windows System Information, or in BIOS.
+
+## Lenovo software conflicts
+
+Running LLT alongside other Lenovo apps that control the same hardware features causes conflicts. The following applications are known to interfere with LLT:
+
+<CardGroup cols={3}>
+  <Card title="Lenovo Vantage" icon="triangle-exclamation">
+    Conflicts with power management, RGB controls, and driver communication. Vantage installs three separate components — the app, Lenovo Vantage Service, and System Interface Foundation V2 Device — all of which must be disabled or removed.
+  </Card>
+  <Card title="Lenovo Hotkeys" icon="triangle-exclamation">
+    Conflicts with Fn key handling and keyboard shortcuts managed by LLT.
+  </Card>
+  <Card title="Legion Zone" icon="triangle-exclamation">
+    Conflicts with power modes, fan control, and GPU overclock settings.
+  </Card>
+</CardGroup>
+
+The recommended approach is to disable all three from **Settings** inside LLT. You can also uninstall them; if you choose to uninstall Vantage, make sure all three Vantage components are removed — partial uninstalls leave background processes running.
+
+<Tip>
+You can verify whether conflicting processes are still running by opening Task Manager and checking for processes with `Vantage` or `ImController` in their name.
+</Tip>
+
+## Known limitations
+
+### Multiple users and non-admin accounts
+
+LLT does not support installations shared across multiple user accounts on the same machine. If you need multiple users, you may encounter issues. LLT also requires an account with Administrator rights — accounts without Administrator rights will cause LLT to malfunction.
+
+### Features not available on all generations
+
+Some features are restricted by hardware support:
+
+- **Custom fan curves** (Custom Mode) — available on Gen 6 and later with a supported BIOS version
+- **Fan control** — Gen 7 and later only; older models are not supported due to technical limitations
+- **Hybrid iGPU-only and Hybrid Auto GPU modes** — Gen 7 and Gen 8 only
+- **RGB controls** — model-dependent; some Gen 6 laptops may show incorrect or missing options due to misconfigured BIOS
+
+### Riot Vanguard (Valorant)
+
+Riot Vanguard DRM is known to cause issues with RGB controls. If RGB settings are missing and Vanguard is installed, prevent it from running on startup or uninstall it.
+
+### iCue RGB keyboards
+
+Keyboards requiring Corsair iCUE are not supported by LLT. Use [OpenRGB](https://openrgb.org/) for those keyboards.
+
+## Incompatible device message
+
+If LLT shows an incompatible device warning on startup, your laptop model is either not yet verified or was not detected correctly. This can also occur after a motherboard replacement if the replacement board does not contain correct model or serial numbers.
+
+If you received this message after a motherboard replacement, follow the [LVAR recovery guide](https://laptopwiki.eu/laptopwiki/guides/lenovo/legion_bios_lvarrecovery) to restore the model data. As a temporary workaround, you can launch LLT with the `--skip-compat-check` argument — but note that no support is provided when this argument is in use.
+
+If you have a currently unsupported device and want to help expand compatibility, see the [Contribution](https://github.com/BartoszCichecki/LenovoLegionToolkit/blob/master/CONTRIBUTING.md) guide on GitHub.

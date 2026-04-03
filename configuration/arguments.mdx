@@ -1,0 +1,96 @@
+---
+title: "Command-line arguments"
+description: "All supported arguments for Lenovo Legion Toolkit, including how to set them permanently via args.txt."
+---
+
+Some features in LLT are intentionally not exposed in the UI because they're rarely needed, carry caveats, or are only useful in specific situations. These can be enabled by passing arguments to the LLT executable, or by adding them to a persistent `args.txt` file.
+
+<Warning>
+Arguments marked **no support** mean that LLT maintainers will not investigate issues that only occur when those arguments are active. Use them at your own risk.
+</Warning>
+
+## Using args.txt
+
+Instead of passing arguments on the command line each time, you can save them to a file so they apply on every launch.
+
+<Steps>
+  <Step title="Open the LLT data folder">
+    Press **Win+R**, type `%LOCALAPPDATA%\LenovoLegionToolkit`, and press **Enter**.
+  </Step>
+  <Step title="Create or edit args.txt">
+    Create a new file named `args.txt` in that folder, or open it if it already exists.
+  </Step>
+  <Step title="Add arguments">
+    Write one argument per line. For example:
+
+    ```text
+    --minimized
+    --trace
+    ```
+  </Step>
+  <Step title="Restart LLT">
+    Close LLT completely (including the tray icon) and launch it again. The arguments will take effect.
+  </Step>
+</Steps>
+
+## Argument reference
+
+### Logging
+
+| Argument | Description |
+|---|---|
+| `--trace` | Enables verbose logging to `%LOCALAPPDATA%\LenovoLegionToolkit\log`. Use this when collecting logs for a bug report. See [Collecting logs](/troubleshooting/logs) for details. |
+
+### Startup behavior
+
+| Argument | Description |
+|---|---|
+| `--minimized` | Starts LLT directly to the system tray without opening the main window. |
+| `--skip-compat-check` | Skips the compatibility check on startup. Useful after a motherboard replacement where model/serial numbers are missing. **No support when used.** |
+
+### Power modes
+
+| Argument | Description |
+|---|---|
+| `--allow-all-power-modes-on-battery` | Allows switching to Performance and Custom power modes without an AC adapter connected. Power limits and other settings may not apply correctly on battery. **No support when used.** |
+
+### GPU
+
+| Argument | Description |
+|---|---|
+| `--enable-hybrid-mode-automation` | Allows Hybrid Mode and GPU Working Mode to be changed via the Actions system. **No support when used.** |
+| `--experimental-gpu-working-mode` | Switches the GPU Working Mode toggle to use an experimental method (the same one used by Legion Zone). Try this if the default method causes issues. **No support when used.** |
+
+### RGB and lighting
+
+| Argument | Description |
+|---|---|
+| `--force-disable-rgbkb` | Disables all LLT controls for 4-zone RGB keyboards. Use this when another app (like [OpenRGB](https://openrgb.org/) or [L5P-Keyboard-RGB](https://github.com/4JX/L5P-Keyboard-RGB)) manages your keyboard lighting. |
+| `--force-disable-spectrumkb` | Disables all LLT controls for Spectrum per-key RGB keyboards. |
+| `--force-disable-lenovolighting` | Disables LLT controls for the panel logo, rear port backlight, and some white backlit keyboards. |
+
+### Tray
+
+| Argument | Description |
+|---|---|
+| `--disable-tray-tooltip` | Disables the tooltip that appears when hovering over the LLT tray icon. |
+
+### Proxy
+
+| Argument | Description |
+|---|---|
+| `--proxy-url=example.com` | Sets the proxy server URL for LLT to use when making network requests. |
+| `--proxy-username=some_username` | Username for proxy authentication. |
+| `--proxy-password=some_password` | Password for proxy authentication. |
+| `--proxy-allow-all-certs` | Relaxes HTTPS/SSL certificate validation when connecting through a proxy. |
+
+### Updates and warnings
+
+| Argument | Description |
+|---|---|
+| `--disable-update-checker` | Disables automatic update checks. Useful if you manage LLT updates through winget or Scoop. |
+| `--disable-conflicting-software-warning` | Hides warning banners shown when Vantage, Legion Zone, or other conflicting software is detected running. |
+
+<Note>
+Arguments not listed here are either no longer available or have been removed from previous versions.
+</Note>

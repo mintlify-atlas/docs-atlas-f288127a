@@ -1,0 +1,70 @@
+---
+title: "Collecting logs"
+description: "How to enable logging in LLT and collect log files for a GitHub issue report."
+---
+
+When reporting a bug, always attach log files to your issue. Logs give maintainers the information needed to diagnose what went wrong.
+
+## Automatic logs
+
+Critical errors are saved automatically — no action required. They are written to:
+
+```
+%LOCALAPPDATA%\LenovoLegionToolkit\log
+```
+
+Check this folder first. If a log file already exists from the time of the issue, attach it to your report.
+
+## Collecting logs manually
+
+For issues that don't produce an automatic log (or to get more detail), start LLT with logging enabled and reproduce the problem.
+
+<Steps>
+  <Step title="Close LLT completely">
+    Make sure LLT is not running — check the system tray and close it from there if needed.
+  </Step>
+  <Step title="Launch LLT with the --trace argument">
+    Press **Win+R** to open the Run dialog, then paste the following and press **Enter**:
+
+    ```
+    "%LOCALAPPDATA%\Programs\LenovoLegionToolkit\Lenovo Legion Toolkit.exe" --trace
+    ```
+  </Step>
+  <Step title="Confirm logging is active">
+    Once LLT opens, check the title bar. It should show:
+
+    ```
+    Lenovo Legion Toolkit [LOGGING ENABLED]
+    ```
+
+    If you don't see `[LOGGING ENABLED]`, logging is not active — close LLT and retry the previous step.
+  </Step>
+  <Step title="Reproduce the issue">
+    Use the feature or perform the action that causes the problem. Try to reproduce it as closely as possible to what you experienced.
+  </Step>
+  <Step title="Close LLT completely">
+    Exit LLT from the system tray (right-click the tray icon and choose **Exit**). Make sure it is fully gone from the tray before continuing.
+  </Step>
+  <Step title="Open the log folder">
+    Press **Win+R** again and enter:
+
+    ```
+    "%LOCALAPPDATA%\LenovoLegionToolkit\log"
+    ```
+
+    This opens the log directory directly in File Explorer.
+  </Step>
+  <Step title="Attach logs to your GitHub issue">
+    You should see one or more `.log` files. Attach all of them to your [GitHub issue](https://github.com/BartoszCichecki/LenovoLegionToolkit/issues).
+  </Step>
+</Steps>
+
+<Note>
+If you want to use `--trace` on every launch, add it to your `args.txt` file. See [Command-line arguments](/configuration/arguments) for instructions.
+</Note>
+
+## Log file location
+
+| Path | Contents |
+|---|---|
+| `%LOCALAPPDATA%\LenovoLegionToolkit\log` | All log files, including automatic critical error logs and trace logs |

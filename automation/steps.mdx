@@ -1,0 +1,223 @@
+---
+title: "Steps"
+description: "Complete reference for all available action steps in Lenovo Legion Toolkit automation pipelines."
+---
+
+Steps are the individual actions that execute when a pipeline's trigger fires. Each pipeline can contain multiple steps, which run in the order they appear. If one step fails, execution continues with the next step.
+
+<Note>
+  Some steps only appear when the underlying feature is supported by your device. Steps that are not supported on your hardware are hidden in the step picker.
+</Note>
+
+## Flow control
+
+<AccordionGroup>
+  <Accordion title="Delay">
+    Pauses execution for a fixed number of seconds (1, 2, 3, or 5 seconds) before proceeding to the next step.
+
+    Useful when you need to wait for a previous change to take effect before applying the next one.
+  </Accordion>
+
+  <Accordion title="Quick Action">
+    Runs the steps from another pipeline that has no trigger (a Quick Action pipeline). This lets you reuse a common sequence of steps across multiple triggered pipelines without duplicating them.
+  </Accordion>
+
+  <Accordion title="Notification">
+    Displays a notification in the LLT UI with a custom text message. Supports the `$RUN_OUTPUT$` placeholder to show the captured standard output from a preceding **Run** step.
+
+    See [Run scripts](/automation/run-scripts) for details on capturing output.
+  </Accordion>
+
+  <Accordion title="Play sound">
+    Plays a sound file. Useful for audible confirmation that a pipeline has executed.
+  </Accordion>
+</AccordionGroup>
+
+## Power and performance
+
+<AccordionGroup>
+  <Accordion title="Power mode">
+    Sets the Legion power mode to Quiet, Balance, Performance, or Custom (God Mode).
+  </Accordion>
+
+  <Accordion title="God Mode preset">
+    Activates a specific Custom Mode (God Mode) preset. The preset must already be configured in the Custom Mode settings.
+
+    Only available on devices that support Custom Mode.
+  </Accordion>
+
+  <Accordion title="Hybrid mode">
+    Changes the GPU hybrid mode setting (Hybrid on, Hybrid off/dGPU, Hybrid iGPU-only, Hybrid Auto). Requires a restart to take full effect.
+
+    <Warning>
+      Hybrid Mode automation requires the `--enable-hybrid-mode-automation` launch argument. No support is provided when this argument is used.
+    </Warning>
+  </Accordion>
+
+  <Accordion title="Deactivate GPU">
+    Attempts to deactivate the discrete NVIDIA GPU when it is running in hybrid mode. Two methods are available:
+
+    - **Kill apps** — terminates all processes currently running on the dGPU (generally more effective)
+    - **Restart GPU** — briefly disables and re-enables the dGPU to force processes to migrate to the integrated GPU
+
+    Only available on devices with a supported NVIDIA discrete GPU in hybrid mode.
+  </Accordion>
+
+  <Accordion title="Overclock discrete GPU">
+    Enables or disables the discrete GPU overclock setting (equivalent to the overclock option in Vantage).
+
+    Only available on supported NVIDIA discrete GPUs.
+  </Accordion>
+
+  <Accordion title="OverDrive">
+    Enables or disables the OverDrive display response time feature.
+  </Accordion>
+
+  <Accordion title="Instant Boot">
+    Enables or disables the Instant Boot (fast startup) setting.
+  </Accordion>
+
+  <Accordion title="Flip to start">
+    Enables or disables the Flip to Start feature, which powers the laptop on when you open the lid.
+  </Accordion>
+</AccordionGroup>
+
+## Display
+
+<AccordionGroup>
+  <Accordion title="Display brightness">
+    Sets the internal display brightness to a specific percentage.
+  </Accordion>
+
+  <Accordion title="Refresh rate">
+    Sets the display refresh rate (for example, 60 Hz or 165 Hz). Available values depend on your display's supported modes.
+  </Accordion>
+
+  <Accordion title="Resolution">
+    Sets the display resolution. Available values depend on your display's supported resolutions.
+  </Accordion>
+
+  <Accordion title="DPI scale">
+    Sets the Windows display scaling (DPI) percentage.
+  </Accordion>
+
+  <Accordion title="HDR">
+    Enables or disables HDR on the display.
+  </Accordion>
+
+  <Accordion title="Turn off monitors">
+    Immediately turns off all connected monitors without locking the session.
+  </Accordion>
+</AccordionGroup>
+
+## Keyboard and input
+
+<AccordionGroup>
+  <Accordion title="RGB keyboard backlight">
+    Sets the 4-zone RGB keyboard backlight to a specific preset. Only available on devices with 4-zone RGB keyboards.
+  </Accordion>
+
+  <Accordion title="Spectrum keyboard backlight profile">
+    Switches the per-key Spectrum RGB keyboard to one of the six saved lighting profiles (1–6).
+
+    Only available on devices with Spectrum per-key RGB keyboards.
+  </Accordion>
+
+  <Accordion title="Spectrum keyboard backlight brightness">
+    Sets the brightness level of the Spectrum per-key RGB keyboard.
+
+    Only available on devices with Spectrum per-key RGB keyboards.
+  </Accordion>
+
+  <Accordion title="Spectrum keyboard backlight import profile">
+    Imports and applies a Spectrum RGB profile from a file.
+
+    Only available on devices with Spectrum per-key RGB keyboards.
+  </Accordion>
+
+  <Accordion title="White keyboard backlight">
+    Sets the white keyboard backlight level on keyboards with multi-level white backlighting.
+  </Accordion>
+
+  <Accordion title="One-level white keyboard backlight">
+    Toggles the keyboard backlight on or off on keyboards with a single-level white backlight.
+  </Accordion>
+
+  <Accordion title="Fn Lock">
+    Enables or disables the Fn Lock, which swaps the function of the Fn key row between F1–F12 and the hardware shortcut actions.
+  </Accordion>
+
+  <Accordion title="Win key">
+    Enables or disables the Windows key.
+  </Accordion>
+
+  <Accordion title="Touchpad lock">
+    Enables or disables the touchpad.
+  </Accordion>
+
+  <Accordion title="Macro">
+    Enables or disables the macro system (on/off).
+  </Accordion>
+</AccordionGroup>
+
+## Lighting
+
+<AccordionGroup>
+  <Accordion title="Panel logo backlight">
+    Sets the brightness or state of the panel logo backlight on the laptop lid.
+  </Accordion>
+
+  <Accordion title="Ports backlight">
+    Sets the brightness or state of the rear ports backlight.
+  </Accordion>
+</AccordionGroup>
+
+## Battery
+
+<AccordionGroup>
+  <Accordion title="Battery">
+    Sets the battery charging mode (for example, Conservation, Normal, or Rapid Charge).
+  </Accordion>
+
+  <Accordion title="Battery night charge">
+    Enables or disables the Battery Night Charge feature, which limits charging to off-peak hours to reduce battery wear.
+  </Accordion>
+
+  <Accordion title="Always on USB">
+    Enables or disables the Always On USB port, which can supply power even when the laptop is off or sleeping.
+  </Accordion>
+</AccordionGroup>
+
+## Audio
+
+<AccordionGroup>
+  <Accordion title="Microphone">
+    Mutes or unmutes the microphone.
+  </Accordion>
+
+  <Accordion title="Speaker">
+    Mutes or unmutes the speaker audio.
+  </Accordion>
+</AccordionGroup>
+
+## Network
+
+<AccordionGroup>
+  <Accordion title="Turn on Wi-Fi">
+    Enables the Wi-Fi adapter.
+  </Accordion>
+
+  <Accordion title="Turn off Wi-Fi">
+    Disables the Wi-Fi adapter.
+  </Accordion>
+</AccordionGroup>
+
+## Scripting
+
+<AccordionGroup>
+  <Accordion title="Run">
+    Executes an external program, script, or command. Supports `.exe` executables and `.bat` scripts, with optional arguments. Can optionally run silently (no visible window) and wait for the process to exit before continuing.
+
+    See [Run scripts](/automation/run-scripts) for full details, including the environment variables LLT injects and how to capture output.
+  </Accordion>
+</AccordionGroup>

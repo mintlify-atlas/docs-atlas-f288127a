@@ -1,0 +1,79 @@
+---
+title: "Battery"
+description: "Manage battery longevity and charging speed with Conservation, Normal, and Rapid Charge modes, view battery statistics, and schedule overnight charging with Night Charge."
+---
+
+LLT provides control over how and how much your battery charges, allowing you to optimize for long-term battery health, everyday use, or fast top-ups. You can also view detailed battery statistics and configure overnight charging behavior.
+
+## Charging Modes
+
+<CardGroup cols={3}>
+  <Card title="Conservation" icon="leaf">
+    Charges only to a firmware-set threshold (~60% for MY2021 and earlier, ~80% for MY2022 and later). Best for when the laptop stays plugged in most of the time.
+  </Card>
+  <Card title="Normal" icon="battery-half">
+    Standard charging behavior. Charges the battery to 100% at a regular rate. Suitable for daily use when you need a full charge.
+  </Card>
+  <Card title="Rapid Charge" icon="battery-full">
+    Charges the battery faster than Normal mode. Useful when you need a quick top-up before heading out.
+  </Card>
+</CardGroup>
+
+### Conservation Mode Threshold
+
+<Warning>
+  The Conservation mode charge threshold is set in firmware and **cannot be changed** through LLT or any other software. The ceiling is approximately **60%** on MY2021 laptops and earlier, and approximately **80%** on MY2022 laptops and later.
+</Warning>
+
+This threshold is enforced by the embedded controller (EC) and is not configurable. If you require a different charge ceiling, Conservation mode may not suit your needs.
+
+## Night Charge
+
+Night Charge (`BatteryNightChargeState`) lets you schedule the laptop to charge during off-peak hours — for example, completing a full charge only in the early morning rather than keeping the battery at 100% all night.
+
+<AccordionGroup>
+  <Accordion title="Night Charge: On">
+    The system delays reaching a full charge until closer to when you typically wake or start using the device. This reduces the time the battery spends sitting at 100%, which can degrade cells over time.
+  </Accordion>
+  <Accordion title="Night Charge: Off">
+    Standard charging resumes. The battery charges to its ceiling (100% in Normal/Rapid, or the firmware threshold in Conservation) as soon as possible when plugged in.
+  </Accordion>
+</AccordionGroup>
+
+<Tip>
+  For the best long-term battery health, consider combining **Conservation mode** during the day with **Night Charge** enabled overnight. This keeps the battery from sitting at 100% for extended periods while still ensuring a usable charge is ready in the morning.
+</Tip>
+
+## Battery Statistics
+
+LLT can display battery statistics sourced from the Windows battery reporting API. The statistics view shows data about the current battery condition, giving you insight into degradation over time.
+
+Typical statistics visible include:
+
+- **Design capacity** — the capacity the battery was rated for when new
+- **Full charge capacity** — the maximum charge the battery can currently hold
+- **Battery wear** — the difference between design and full charge capacity, expressed as a percentage
+
+<Note>
+  Battery statistics are read-only and reflect data reported by the Windows battery subsystem. Accuracy depends on the firmware and driver stack, and values can vary slightly over a charge cycle.
+</Note>
+
+## Command Line
+
+Battery charging mode can be read and set via the LLT CLI:
+
+```sh
+# List available charging modes
+llt feature set Battery --list
+
+# Get the current charging mode
+llt feature get Battery
+
+# Switch to Conservation mode
+llt feature set Battery Conservation
+
+# Switch to Rapid Charge
+llt feature set Battery RapidCharge
+```
+
+CLI requires LLT to be running in the background and the CLI option to be enabled in LLT settings.

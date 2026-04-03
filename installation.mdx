@@ -1,0 +1,98 @@
+---
+title: "Installation"
+description: "Download and install Lenovo Legion Toolkit using GitHub Releases, winget, or Scoop. Covers required drivers, .NET setup, and first-time configuration."
+---
+
+## Download
+
+Choose the method that suits your setup. All three options install the same application.
+
+<CodeGroup>
+
+```bash winget
+winget install BartoszCichecki.LenovoLegionToolkit
+```
+
+```bash Scoop
+scoop bucket add versions
+scoop bucket add extras
+scoop install extras/lenovolegiontoolkit
+```
+
+</CodeGroup>
+
+To install manually, download the latest installer from [GitHub Releases](https://github.com/BartoszCichecki/LenovoLegionToolkit/releases/latest).
+
+<Note>
+If you installed LLT from Scoop, .NET 8 is installed automatically as a dependency. If anything fails after installation, run `scoop update` to update all packages and reinstall with `scoop install --force extras/lenovolegiontoolkit`.
+</Note>
+
+## Required drivers
+
+If you installed LLT on a clean Windows setup, make sure the following Lenovo drivers are installed before launching LLT. Without them, some features will not be available.
+
+1. **Lenovo Energy Management**
+2. **Lenovo Vantage Gaming Feature Driver**
+
+These are available through Windows Update, Lenovo Vantage, or the [Lenovo Support site](https://support.lenovo.com).
+
+## .NET 8 setup
+
+LLT requires .NET 8 Desktop Runtime. The installer configures this automatically in most cases. If LLT shows an error about .NET on startup, install it manually:
+
+<Steps>
+  <Step title="Go to the .NET download page">
+    Open [https://dotnet.microsoft.com/en-us/download/dotnet/8.0](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) in your browser.
+  </Step>
+  <Step title="Download the Desktop Runtime">
+    Find the **.NET Desktop Runtime** section and download the **x64 Windows installer**.
+  </Step>
+  <Step title="Run the installer">
+    Run the downloaded `.exe` and follow the prompts.
+  </Step>
+  <Step title="Verify the installation">
+    Open Terminal and run:
+
+    ```bash
+    dotnet --info
+    ```
+
+    In the output, look for the `.NET runtimes installed` section. You should see entries similar to:
+
+    ```
+    Microsoft.NETCore.App 8.0.0 [C:\Program Files\dotnet\shared\Microsoft.NETCore.App]
+    Microsoft.WindowsDesktop.App 8.0.0 [C:\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App]
+    ```
+
+    Any `8.x.x` version is sufficient.
+  </Step>
+</Steps>
+
+<Warning>
+If LLT still shows a .NET error after completing these steps, the problem is specific to your machine configuration and is outside the scope of LLT support.
+</Warning>
+
+## First-time configuration
+
+After launching LLT, complete these steps so it works correctly in the background.
+
+<Steps>
+  <Step title="Enable Autorun and Minimize on close">
+    Open **Settings** and enable both **Autorun** and **Minimize on close**. This ensures LLT starts with Windows and stays running in the system tray.
+  </Step>
+  <Step title="Disable conflicting Lenovo software">
+    In **Settings**, disable **Lenovo Vantage**, **Legion Zone**, and **Hotkeys**. LLT and these applications control the same hardware features — running them together causes conflicts.
+
+    <Tip>
+      Using the disable option in LLT Settings is the easiest approach. You do not need to uninstall these applications unless you prefer to.
+    </Tip>
+  </Step>
+</Steps>
+
+<Warning>
+If you close LLT completely — rather than minimizing to the tray — certain features will stop working. This includes Windows Power Mode synchronization, Macros, and Actions. LLT does not run any background services, so it must remain open in the tray to respond to system events.
+</Warning>
+
+## Administrator account requirement
+
+LLT must be installed and run from a Windows account with Administrator rights. Accounts without Administrator rights will cause LLT to malfunction. Multi-user setups on a single machine are not supported — see [Compatibility](/compatibility) for details.

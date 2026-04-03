@@ -1,0 +1,101 @@
+---
+title: "Display"
+description: "Adjust refresh rate, resolution, DPI scaling, HDR, and display overdrive for the built-in panel directly from LLT — no need to dig through Windows display settings."
+---
+
+LLT provides quick access to the most frequently changed display settings for the internal laptop panel. All changes are applied immediately to the built-in display without requiring a restart.
+
+## Refresh Rate
+
+LLT reads the list of refresh rates supported by your panel at its current resolution and lets you switch between them from the dashboard.
+
+The refresh rate selector shows only rates that are valid for the current resolution, color depth, and scan mode — preventing incompatible combinations. The internal display is queried directly using the Windows Display API.
+
+**Common values (depends on your panel):**
+- 60 Hz — power-efficient, ideal for office work
+- 120 Hz / 144 Hz — smooth for general use and light gaming
+- 165 Hz / 240 Hz / 300 Hz+ — high-framerate gaming panels
+
+<Tip>
+  Switching from a high refresh rate to 60 Hz while on battery can meaningfully extend battery life on panels that don't support variable refresh rate power gating.
+</Tip>
+
+Changes can also be made via the LLT CLI and are exposed to Actions scripts via `LLT_IS_DISPLAY_ON` and notification type `RefreshRate`.
+
+## Resolution
+
+LLT enumerates all resolutions supported by the internal display at the current refresh rate and lets you select among them.
+
+Like refresh rate, only compatible combinations are shown. Switching resolution while keeping refresh rate fixed is useful for games or applications that perform better at lower pixel counts.
+
+<Note>
+  Resolution changes in LLT apply specifically to the **internal display**. External monitors connected via HDMI or USB-C are not affected and must be configured separately through Windows display settings.
+</Note>
+
+## DPI Scaling
+
+DPI scaling (display scale factor) controls how large UI elements appear relative to the physical pixel density of the panel. LLT exposes the same scaling options available in Windows display settings, filtered to the range your panel supports.
+
+Available scale steps are determined by the panel's maximum supported DPI scale. LLT reads this from the display path configuration and presents only valid options.
+
+Typical scale values:
+- **100%** — native pixels, best clarity on high-DPI panels but small UI elements
+- **125% / 150%** — common choices for 2K panels
+- **200%** — suitable for high-DPI displays where native scaling would make UI too small
+
+<Note>
+  Some applications may need to be restarted after changing DPI scaling to render at the correct scale. Windows will display a "Sign out to apply" prompt for scale changes that require a session restart.
+</Note>
+
+## HDR
+
+High Dynamic Range (HDR) expands the display's luminance range and color gamut, producing brighter highlights and deeper shadows on supported panels.
+
+| State | Description                                              |
+|-------|----------------------------------------------------------|
+| `Off` | Standard dynamic range (SDR) — default for most panels   |
+| `On`  | High dynamic range enabled — requires an HDR-capable panel |
+
+LLT checks whether the internal display reports HDR capability (`AdvancedColorSupported`) before showing the toggle. If your panel does not support HDR, this control will not appear.
+
+<AccordionGroup>
+  <Accordion title="HDR is supported but appears blocked">
+    In some configurations, Windows can force-disable HDR (`AdvancedColorForceDisabled`). This can happen after a driver update or Windows update. If LLT reports that HDR is blocked, check Windows display settings and your GPU driver settings panel for conflicting HDR controls.
+  </Accordion>
+  <Accordion title="HDR and color accuracy">
+    Enabling HDR on panels not calibrated for it can cause washed-out colors in SDR content. Many Legion panels that report HDR support are better used in SDR for productivity; HDR is most impactful in supported games and media.
+  </Accordion>
+</AccordionGroup>
+
+HDR state changes are also available as Actions triggers:
+
+| Variable         | Values               |
+|------------------|----------------------|
+| `LLT_IS_HDR_ON`  | `TRUE` or `FALSE`    |
+
+## Display Overdrive
+
+Display overdrive (also called response time acceleration) reduces pixel transition time, making fast-moving content appear sharper. Some panels show increased "inverse ghosting" or artifacts at high overdrive levels.
+
+| State | Description                                                  |
+|-------|--------------------------------------------------------------|
+| `Off` | Standard pixel response — no overdrive applied               |
+| `On`  | Overdrive enabled — faster pixel transitions, reduced motion blur |
+
+<Tip>
+  Overdrive is most beneficial at high refresh rates (144 Hz and above) where individual frames are displayed for a shorter time. At 60 Hz, the benefit is less noticeable and artifacts may be more visible.
+</Tip>
+
+Overdrive capability is reported via the `CapabilityID.OverDrive` flag. The control only appears when your device supports it.
+
+## Summary of Display Features
+
+| Feature         | Feature Class           | Enum / Type       | Requires Restart |
+|-----------------|------------------------|-------------------|-----------------|
+| Refresh Rate    | `RefreshRateFeature`   | `RefreshRate`     | No              |
+| Resolution      | `ResolutionFeature`    | `Resolution`      | No              |
+| DPI Scaling     | `DpiScaleFeature`      | `DpiScale`        | No (may need sign-out) |
+| HDR             | `HDRFeature`           | `HDRState`        | No              |
+| Overdrive       | `OverDriveFeature`     | `OverDriveState`  | No              |
+
+All display features operate on the **built-in internal panel** only and are applied immediately through the Windows Display API without requiring administrative privileges beyond LLT's own elevation.

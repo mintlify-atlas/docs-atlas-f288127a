@@ -1,0 +1,134 @@
+---
+title: "Power Modes"
+description: "Control performance and thermals with Quiet, Balance, Performance, and Custom (God Mode) power modes — including fan curves, power limits, and Windows Power Mode sync."
+---
+
+LLT exposes the same four power modes available in Lenovo Vantage, plus the ability to sync them with Windows Power Mode or legacy Power Plans. You can switch modes from the dashboard or with the **Fn+Q** shortcut (except Custom Mode).
+
+## Available Power Modes
+
+<CardGroup cols={2}>
+  <Card title="Quiet" icon="volume-xmark">
+    Prioritizes low noise and thermals. Fans run at reduced speeds. Best for productivity or light use on battery.
+  </Card>
+  <Card title="Balance" icon="scale-balanced">
+    The default mode. Balances performance against noise and battery life. Suitable for everyday use.
+  </Card>
+  <Card title="Performance" icon="bolt">
+    Maximizes CPU and GPU performance. Fans run aggressively. Requires AC power by default.
+  </Card>
+  <Card title="Custom (God Mode)" icon="sliders">
+    A 4th power mode that allows full manual control over power limits and fan curves. Requires AC power and is **not** accessible via Fn+Q.
+  </Card>
+</CardGroup>
+
+<Note>
+  Performance and Custom modes are only available when connected to a full-power AC adapter. To override this restriction, launch LLT with the `--allow-all-power-modes-on-battery` argument — but note that power limits and other settings may not apply correctly on battery, and no support is provided for issues that result.
+</Note>
+
+## Custom Mode (God Mode)
+
+Custom Mode (`PowerModeState.GodMode = 254`) is the most powerful option available. Unlike the other three modes, it cannot be toggled via **Fn+Q** and must be selected from the LLT dashboard.
+
+When active, Custom Mode lets you independently configure:
+
+- **CPU power limits** — Short-term, long-term, peak, cross-loading, and APU sPPT limits
+- **CPU temperature limit** — Cap the maximum CPU operating temperature
+- **GPU power targets** — Configurable TGP, power boost, and GPU-to-CPU dynamic boost
+- **Fan curves** — Per-fan (CPU, GPU) speed tables mapped to temperature, available on Gen 7 and later
+
+<Warning>
+  Not all Custom Mode parameters are available on every device. Capability depends on both the hardware generation and BIOS version.
+</Warning>
+
+### Required BIOS Versions
+
+Custom Mode requires firmware at or above the following minimum versions. If your BIOS is older, update it before using Custom Mode:
+
+| BIOS Series | Minimum Version |
+|-------------|----------------|
+| G9CN        | 24 or higher   |
+| GKCN        | 46 or higher   |
+| H1CN        | 39 or higher   |
+| HACN        | 31 or higher   |
+| HHCN        | 20 or higher   |
+
+### Fan Control
+
+Fan curves are available in Custom Mode on **Gen 7 (MY2022) and later** laptops. Older generations cannot have fan curves customized due to firmware limitations.
+
+Fan curves are defined per sensor type:
+
+- `CPU` — controls the CPU fan based on CPU temperature
+- `CPUSensor` — alternative CPU sensor-based curve
+- `GPU` — controls the GPU fan based on GPU temperature
+- `GPU2` — secondary GPU fan (where applicable)
+
+<Tip>
+  Fan control is only adjustable in Custom Mode. Quiet, Balance, and Performance modes use firmware-defined fan behaviors that cannot be changed through LLT.
+</Tip>
+
+## Windows Power Mode & Power Plan Sync
+
+The Legion Power Mode (shown in LLT) is distinct from the Windows Power Mode (found in Windows Settings) and Windows Power Plans (found in Control Panel). LLT can synchronize them automatically whenever you switch Legion modes.
+
+<Tabs>
+  <Tab title="Windows Power Mode (Recommended)">
+    The modern approach. Keep Windows on the default "Balanced (recommended)" Power Plan, and map each Legion mode to a Windows Power Mode:
+
+    | Legion Mode | Windows Power Mode       |
+    |-------------|--------------------------|
+    | Quiet       | Best power efficiency    |
+    | Balance     | Balanced                 |
+    | Performance | Best performance         |
+    | Custom      | Configurable (your choice) |
+
+    When you switch Legion modes, LLT automatically applies the mapped Windows Power Mode.
+  </Tab>
+  <Tab title="Legacy Power Plans">
+    For users who prefer or already have multiple custom Power Plans configured. Assign a specific Power Plan to each Legion mode in LLT settings, and LLT will switch plans automatically.
+
+    If using this approach, leave the Windows Settings Power Mode on "Balanced" to avoid conflicts.
+  </Tab>
+  <Tab title="Disabled">
+    LLT does not touch Windows Power Mode or Power Plans. You manage them independently.
+  </Tab>
+</Tabs>
+
+<Note>
+  Power Mode and Plan synchronization require LLT to be running in the background. If LLT is fully closed (removed from the tray), it cannot respond to mode changes and synchronization will not occur.
+</Note>
+
+### Resetting Windows Power Settings
+
+If you encounter issues switching between the two synchronization approaches, you can reset all Windows power settings to their defaults:
+
+```powershell
+powercfg -restoredefaultschemes; shutdown /r /t 0
+```
+
+<Warning>
+  This command deletes all custom Power Plans and reboots the device immediately. Back up any custom plans before running it.
+</Warning>
+
+## Command Line
+
+Power mode can be read and set via the LLT CLI when LLT is running in the background and CLI is enabled in settings:
+
+```sh
+# List available power modes
+llt feature set PowerMode --list
+
+# Get the current power mode
+llt feature get PowerMode
+
+# Switch to Performance mode
+llt feature set PowerMode Performance
+```
+
+Power mode changes also expose environment variables to Actions scripts:
+
+| Variable              | Values                                        |
+|-----------------------|-----------------------------------------------|
+| `LLT_POWER_MODE`      | `1` (Quiet), `2` (Balance), `3` (Performance), `255` (Custom) |
+| `LLT_POWER_MODE_NAME` | `QUIET`, `BALANCE`, `PERFORMANCE`, `CUSTOM`   |

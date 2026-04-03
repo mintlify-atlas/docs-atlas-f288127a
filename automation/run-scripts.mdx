@@ -1,0 +1,162 @@
+---
+title: "Run scripts"
+description: "Use the Run step to execute programs and scripts from automation pipelines, with access to trigger context via environment variables."
+---
+
+The **Run** step launches any executable or script when a pipeline fires. You can use it to shut down the system, apply configuration via external tools, run Python scripts, or invoke any program available on your machine.
+
+## Configuration
+
+| Field | Description |
+|---|---|
+| **Executable path** | Full path to the `.exe` or `.bat` file, or just the program name if it is on your `PATH`. |
+| **Arguments** | Optional arguments passed to the program, the same as you would type on the command line. |
+| **Run silently** | When checked, runs the process without showing a console window. Enabled by default. |
+| **Wait for exit** | When checked, LLT waits for the process to finish before running the next step. Required to capture output. |
+
+## Examples
+
+<AccordionGroup>
+  <Accordion title="Shut down the laptop">
+    - **Executable path:** `shutdown`
+    - **Arguments:** `/s /t 0`
+  </Accordion>
+
+  <Accordion title="Restart the laptop">
+    - **Executable path:** `shutdown`
+    - **Arguments:** `/r`
+  </Accordion>
+
+  <Accordion title="Run a program">
+    - **Executable path:** `C:\path\to\program.exe` (or just the name if it is on your `PATH`)
+    - **Arguments:** *(optional — check the program's documentation for supported arguments)*
+  </Accordion>
+
+  <Accordion title="Run a batch script">
+    - **Executable path:** `C:\path\to\script.bat` (or just the name if it is on your `PATH`)
+    - **Arguments:** *(optional)*
+  </Accordion>
+
+  <Accordion title="Run a Python script">
+    - **Executable path:** `C:\path\to\python.exe` (or just `python` if it is on your `PATH`)
+    - **Arguments:** `C:\path\to\script.py`
+  </Accordion>
+</AccordionGroup>
+
+## Environment variables
+
+LLT automatically injects environment variables into the launched process so your scripts can read the trigger context. The variables available depend on which trigger fired the pipeline.
+
+<Note>
+  All variable values are strings. Boolean values are the literal string `TRUE` or `FALSE`.
+</Note>
+
+### AC adapter
+
+| Variable | Value | Trigger condition |
+|---|---|---|
+| `LLT_IS_AC_ADAPTER_CONNECTED` | `TRUE` | AC adapter connected or low-wattage adapter connected |
+| `LLT_IS_AC_ADAPTER_CONNECTED` | `FALSE` | AC adapter disconnected |
+| `LLT_IS_AC_ADAPTER_LOW_POWER` | `TRUE` | Low-wattage AC adapter connected |
+
+### Power mode
+
+| Variable | Value | Description |
+|---|---|---|
+| `LLT_POWER_MODE` | `1`, `2`, `3`, or `255` | Numeric power mode: `1` = Quiet, `2` = Balance, `3` = Performance, `255` = Custom |
+| `LLT_POWER_MODE_NAME` | `QUIET`, `BALANCE`, `PERFORMANCE`, or `CUSTOM` | Human-readable power mode name |
+
+### Games and processes
+
+| Variable | Value | Trigger condition |
+|---|---|---|
+| `LLT_IS_GAME_RUNNING` | `TRUE` | A configured game is running |
+| `LLT_IS_GAME_RUNNING` | `FALSE` | All configured games have stopped |
+| `LLT_PROCESSES_STARTED` | `TRUE` | One or more configured processes started |
+| `LLT_PROCESSES_STARTED` | `FALSE` | All configured processes have stopped |
+| `LLT_PROCESSES` | comma-separated names | The list of configured process names (e.g. `chrome.exe,code.exe`) |
+
+### Lid and display
+
+| Variable | Value | Trigger condition |
+|---|---|---|
+| `LLT_IS_LID_OPEN` | `TRUE` | Lid is open |
+| `LLT_IS_LID_OPEN` | `FALSE` | Lid is closed |
+| `LLT_IS_DISPLAY_ON` | `TRUE` | Display is on |
+| `LLT_IS_DISPLAY_ON` | `FALSE` | Display is off |
+| `LLT_IS_EXTERNAL_DISPLAY_CONNECTED` | `TRUE` | External display is connected |
+| `LLT_IS_EXTERNAL_DISPLAY_CONNECTED` | `FALSE` | No external display connected |
+| `LLT_IS_HDR_ON` | `TRUE` | HDR is enabled |
+| `LLT_IS_HDR_ON` | `FALSE` | HDR is disabled |
+
+### Wi-Fi
+
+| Variable | Value | Trigger condition |
+|---|---|---|
+| `LLT_WIFI_CONNECTED` | `TRUE` | Wi-Fi is connected |
+| `LLT_WIFI_SSID` | network name | The SSID of the connected network |
+| `LLT_WIFI_CONNECTED` | `FALSE` | Wi-Fi is disconnected |
+
+### Time
+
+| Variable | Value | Description |
+|---|---|---|
+| `LLT_IS_SUNSET` | `TRUE` or `FALSE` | Whether the time trigger is configured for sunset |
+| `LLT_IS_SUNRISE` | `TRUE` or `FALSE` | Whether the time trigger is configured for sunrise |
+| `LLT_TIME` | `HH:mm` | The configured trigger time |
+| `LLT_DAYS` | comma-separated day names | The configured days (e.g. `MONDAY,WEDNESDAY,FRIDAY`) |
+
+### Periodic
+
+| Variable | Value | Description |
+|---|---|---|
+| `LLT_PERIOD` | seconds | The configured interval in seconds |
+
+### Startup and resume
+
+| Variable | Value | Trigger condition |
+|---|---|---|
+| `LLT_STARTUP` | `TRUE` | Pipeline triggered by LLT startup |
+| `LLT_RESUME` | `TRUE` | Pipeline triggered by system resume from sleep |
+
+## Capturing output
+
+When **Wait for exit** is checked, LLT captures the standard output (`stdout`) of the launched process and stores it in the `$RUN_OUTPUT$` variable. You can then use this value in a subsequent **Notification** step to display the output as a notification.
+
+**Example workflow:**
+
+1. Add a **Run** step pointing to a script that prints a result to stdout.
+2. Check **Wait for exit** on the Run step.
+3. Add a **Notification** step with the text set to `$RUN_OUTPUT$`.
+
+LLT replaces `$RUN_OUTPUT$` with the captured output when the Notification step runs.
+
+<Warning>
+  If **Wait for exit** is not checked, `$RUN_OUTPUT$` will be empty because LLT does not wait for the process to produce output.
+</Warning>
+
+## Reading variables in a batch script
+
+```bat
+@echo off
+
+if "%LLT_IS_AC_ADAPTER_CONNECTED%"=="TRUE" (
+    echo AC adapter is connected
+) else (
+    echo Running on battery
+)
+
+echo Power mode: %LLT_POWER_MODE_NAME%
+```
+
+## Reading variables in Python
+
+```python
+import os
+
+ac_connected = os.environ.get("LLT_IS_AC_ADAPTER_CONNECTED") == "TRUE"
+power_mode = os.environ.get("LLT_POWER_MODE_NAME", "UNKNOWN")
+
+print(f"AC connected: {ac_connected}")
+print(f"Power mode: {power_mode}")
+```

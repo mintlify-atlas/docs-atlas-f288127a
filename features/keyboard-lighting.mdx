@@ -1,0 +1,209 @@
+---
+title: "Keyboard Lighting"
+description: "Configure Spectrum per-key RGB, 4-zone RGB, white backlight keyboards, and additional lighting zones including the panel logo and rear port strip."
+---
+
+LLT supports all keyboard lighting hardware found on Legion laptops: Spectrum per-key RGB, 4-zone RGB, single-color white backlights, and auxiliary lighting zones for the panel logo and rear ports. The correct controls appear automatically based on what your hardware supports.
+
+<Warning>
+  Lenovo Vantage and its services must be **disabled or uninstalled** to avoid conflicts when LLT communicates with the lighting hardware. LLT automatically disables RGB controls when Vantage is detected running.
+</Warning>
+
+## Spectrum Per-Key RGB
+
+Spectrum keyboards support full per-key color assignment with a wide range of animated effects. Each key can be assigned an individual color, and effects can be configured per zone or globally.
+
+### Effects
+
+<AccordionGroup>
+  <Accordion title="Always">
+    Static colors — each key holds its assigned color with no animation.
+  </Accordion>
+  <Accordion title="Rainbow Screw">
+    A rotating rainbow pattern that spirals across the keyboard.
+  </Accordion>
+  <Accordion title="Rainbow Wave">
+    A rainbow gradient that sweeps across the keyboard in the configured direction.
+  </Accordion>
+  <Accordion title="Color Change">
+    The keyboard transitions between a set of selected colors, changing the whole keyboard at once.
+  </Accordion>
+  <Accordion title="Color Wave">
+    A wave of color sweeps across the keyboard in the configured direction.
+  </Accordion>
+  <Accordion title="Color Pulse">
+    Colors fade in and out (breathe) across the keyboard.
+  </Accordion>
+  <Accordion title="Smooth">
+    A smooth, flowing color gradient animation.
+  </Accordion>
+  <Accordion title="Rain">
+    Random keys light up briefly, like raindrops falling on the keyboard.
+  </Accordion>
+  <Accordion title="Ripple">
+    A ripple effect emanates outward from each key as you press it.
+  </Accordion>
+  <Accordion title="Type">
+    Keys light up reactively as you type.
+  </Accordion>
+  <Accordion title="Audio Bounce">
+    Lighting reacts to audio output, bouncing keys in sync with sound levels.
+  </Accordion>
+  <Accordion title="Audio Ripple">
+    Audio output triggers ripple animations across the keyboard.
+  </Accordion>
+  <Accordion title="Aurora Sync">
+    Syncs the keyboard lighting with compatible Aurora-enabled accessories.
+  </Accordion>
+</AccordionGroup>
+
+### Brightness Levels
+
+Spectrum keyboards support four brightness levels:
+
+| Level  | Description              |
+|--------|--------------------------|
+| Off    | Keyboard lighting off    |
+| Low    | Dim backlight            |
+| Medium | Moderate brightness      |
+| High   | Maximum brightness       |
+
+### Speed & Direction
+
+Animated effects support configurable speed and, where applicable, direction:
+
+- **Speed:** Speed1 (slowest) → Speed2 → Speed3 (fastest)
+- **Linear direction:** Bottom to Top, Top to Bottom, Left to Right, Right to Left
+- **Rotational direction:** Clockwise, Counter-Clockwise
+
+### Spectrum Layout Zones
+
+Spectrum keyboards support different layout configurations depending on the model:
+
+| Layout             | Coverage                                      |
+|--------------------|-----------------------------------------------|
+| `KeyboardOnly`     | Main keyboard area only                       |
+| `KeyboardAndFront` | Keyboard plus front edge lighting             |
+| `Full`             | Keyboard, front edge, and additional zones    |
+| `FullAlternative`  | Alternative full-zone layout for some models  |
+
+### Presets & Profiles
+
+Spectrum keyboards support multiple saved presets. You can switch profiles from within LLT or via the CLI:
+
+```sh
+# Get the active Spectrum profile
+llt spectrum profile get
+
+# Switch to a profile number
+llt spectrum profile set 2
+
+# Get current brightness
+llt spectrum brightness get
+
+# Set brightness (integer: 0=Off, 1=Low, 2=Medium, 3=High)
+llt spectrum brightness set 3
+```
+
+Physical hotkeys on Spectrum keyboards cycle through saved presets using the **Spectrum Preset** keys.
+
+## 4-Zone RGB
+
+4-zone RGB keyboards split the keyboard into four independently controllable lighting zones (typically left, center-left, center-right, and right). Each zone can have its own color and effect.
+
+### Effects
+
+| Effect    | Description                                                     |
+|-----------|-----------------------------------------------------------------|
+| `Static`  | Each zone holds a fixed color with no animation                  |
+| `Breath`  | Zone colors fade in and out rhythmically                         |
+| `Smooth`  | Colors smoothly blend and transition across zones                |
+| `WaveRTL` | A color wave sweeps from right to left across the zones          |
+| `WaveLTR` | A color wave sweeps from left to right across the zones          |
+
+### Brightness
+
+4-zone RGB keyboards support two brightness levels:
+
+| Level | Description         |
+|-------|---------------------|
+| `Low` | Reduced brightness  |
+| `High`| Full brightness     |
+
+### Presets
+
+4-zone RGB supports four saved presets (One, Two, Three, Four) plus an Off state. Switch from the LLT dashboard or CLI:
+
+```sh
+# Get the current 4-zone RGB preset
+llt rgb get
+
+# Set a preset (integer: -1=Off, 0=One, 1=Two, 2=Three, 3=Four)
+llt rgb set 2
+```
+
+## White Backlight
+
+White backlight keyboards have no RGB capability — only white illumination. LLT supports both 1-level and 3-level variants:
+
+<Tabs>
+  <Tab title="1-Level White">
+    A simple on/off toggle. The keyboard is either fully lit or fully off.
+
+    | State | Description  |
+    |-------|--------------|
+    | `Off` | Backlight off |
+    | `On`  | Backlight on  |
+  </Tab>
+  <Tab title="3-Level White">
+    Three brightness steps plus off.
+
+    | State  | Description       |
+    |--------|-------------------|
+    | `Off`  | Backlight off     |
+    | `Low`  | Dim backlight     |
+    | `High` | Full brightness   |
+  </Tab>
+</Tabs>
+
+## Panel Logo Backlight
+
+The illuminated Legion logo on the laptop lid can be turned on or off independently of the keyboard backlight.
+
+| State | Description              |
+|-------|--------------------------|
+| `Off` | Panel logo light off     |
+| `On`  | Panel logo light on      |
+
+## Ports (Rear) Backlight
+
+Many Legion models have an RGB or white light strip along the rear edge of the chassis, illuminating the port area. This can be toggled independently.
+
+| State | Description          |
+|-------|----------------------|
+| `Off` | Port lighting off    |
+| `On`  | Port lighting on     |
+
+## Known Issues & Limitations
+
+<AccordionGroup>
+  <Accordion title="GKCN54WW and earlier — some lighting disabled">
+    Laptops with BIOS versions **GKCN54WW and lower** have certain lighting features disabled in LLT. These BIOS versions contain a bug that causes a Blue Screen of Death (BSOD) when some lighting controls are accessed. Update your BIOS to a newer version to unlock full lighting support.
+  </Accordion>
+  <Accordion title="Riot Vanguard (Valorant) conflicts">
+    Riot Vanguard anti-cheat is known to interfere with RGB controls. If RGB settings disappear after installing Valorant, ensure Vanguard is not set to run on startup, or uninstall it. LLT will not be able to control lighting while Vanguard is active.
+  </Accordion>
+  <Accordion title="Gen 6 models may show incorrect options">
+    Some Gen 6 (MY2021) laptops have misconfigured BIOS reporting and may show options that do not apply to their hardware, or may be missing options that are physically present. This is a firmware issue and cannot be corrected by LLT.
+  </Accordion>
+  <Accordion title="iCue keyboards not supported">
+    Legion laptops that ship with Corsair iCue keyboards are **not supported** by LLT. Use [OpenRGB](https://openrgb.org/) for those devices instead.
+  </Accordion>
+  <Accordion title="Using other RGB software alongside LLT">
+    If you want to use another RGB tool (such as OpenRGB or L5P-Keyboard-RGB) alongside LLT, you can disable LLT's lighting control with these startup arguments:
+
+    - `--force-disable-rgbkb` — disables all 4-zone RGB controls
+    - `--force-disable-spectrumkb` — disables all Spectrum per-key RGB controls
+    - `--force-disable-lenovolighting` — disables panel logo, ports, and some white backlight controls
+  </Accordion>
+</AccordionGroup>

@@ -1,0 +1,86 @@
+{
+  "projectType": "saas",
+  "projectName": "Lenovo Legion Toolkit",
+  "projectDescription": "A lightweight Windows utility that replaces Lenovo Vantage and Hotkeys for Legion laptops, offering power mode control, RGB lighting, GPU management, battery tuning, and automation without background services.",
+  "theme": "almond",
+  "primaryColor": "#E2231A",
+  "lightColor": "#FF4A41",
+  "darkColor": "#B81A13",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "installation",
+              "compatibility"
+            ]
+          },
+          {
+            "group": "Core Features",
+            "pages": [
+              "features/power-modes",
+              "features/battery",
+              "features/gpu-management",
+              "features/keyboard-lighting",
+              "features/display"
+            ]
+          },
+          {
+            "group": "Automation & Actions",
+            "pages": [
+              "automation/overview",
+              "automation/triggers",
+              "automation/steps",
+              "automation/run-scripts"
+            ]
+          },
+          {
+            "group": "CLI",
+            "pages": [
+              "cli/overview",
+              "cli/commands"
+            ]
+          },
+          {
+            "group": "Configuration & Troubleshooting",
+            "pages": [
+              "configuration/arguments",
+              "configuration/settings",
+              "troubleshooting/faq",
+              "troubleshooting/logs"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Power mode control (Quiet, Balance, Performance, Custom/God Mode) with fan curve customization",
+    "Battery management with Conservation, Normal, and Rapid Charge modes",
+    "Hybrid GPU mode and dGPU management (activate/deactivate, overclock)",
+    "Spectrum per-key RGB and 4-zone RGB keyboard backlight control",
+    "Automation pipelines with 30+ triggers and 40+ action steps",
+    "CLI interface for scripting and integration",
+    "No background services — minimal resource usage, no telemetry",
+    "Driver and software update checker",
+    "Disable/enable Lenovo Vantage, Legion Zone, and Hotkeys without uninstalling"
+  ],
+  "publicApiSurface": [
+    "llt quickAction --list",
+    "llt quickAction <name>",
+    "llt feature --list",
+    "llt feature get <name>",
+    "llt feature set <name> <value>",
+    "llt spectrum profile get/set <profile>",
+    "llt spectrum brightness get/set <brightness>",
+    "llt rgb get/set <preset>",
+    "PowerModeState (Quiet, Balance, Performance, GodMode)",
+    "BatteryState (Conservation, Normal, RapidCharge)",
+    "HybridModeState (On, OnIGPUOnly, OnAuto, Off)",
+    "AutomationPipeline with triggers and steps"
+  ]
+}

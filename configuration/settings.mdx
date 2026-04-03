@@ -1,0 +1,175 @@
+---
+title: "App settings"
+description: "Overview of all configurable settings in Lenovo Legion Toolkit."
+---
+
+The **Settings** page in LLT is where you configure how the app behaves — from startup options and themes to software conflict management and integrations.
+
+<Tip>
+After installing LLT, the most important first steps are enabling **Autorun** and **Minimize on close**, then disabling Vantage, Legion Zone, and Hotkeys so LLT can take full control.
+</Tip>
+
+## Startup and window behavior
+
+### Autorun
+
+Controls whether LLT launches automatically when Windows starts.
+
+| Option | Behavior |
+|---|---|
+| **Enabled** | LLT starts immediately when you log in. |
+| **Enabled (delayed)** | LLT starts a short time after login to reduce startup load. |
+| **Disabled** | LLT does not start automatically. |
+
+### Minimize to tray
+
+When enabled, minimizing the LLT window sends it to the system tray rather than the taskbar.
+
+### Minimize on close
+
+When enabled, clicking the window's close button sends LLT to the system tray instead of exiting. This is required for background features like power mode synchronization, Macros, and Actions to continue working.
+
+<Warning>
+If LLT is fully closed (not running in the tray), features such as Windows Power Mode sync, Macros, and Actions will not work.
+</Warning>
+
+## Appearance
+
+### Theme
+
+Sets the UI color scheme.
+
+| Option | Behavior |
+|---|---|
+| **System** | Follows the Windows light/dark mode setting. |
+| **Light** | Always uses the light theme. |
+| **Dark** | Always uses the dark theme. |
+
+### Accent color source
+
+Controls the accent color used throughout the UI.
+
+| Option | Behavior |
+|---|---|
+| **System** | Uses the Windows accent color. |
+| **Custom** | Lets you pick a specific color with the color picker. |
+
+### Language
+
+If more than one language is available, a dropdown lets you switch the UI language. Changing the language restarts the main window.
+
+### Temperature unit
+
+Sets the unit used for temperature readings throughout the app. Options are **Celsius** and **Fahrenheit**.
+
+## Lenovo software management
+
+These toggles let you disable Lenovo's bundled software without uninstalling it. Only software detected on your system is shown.
+
+### Disable Lenovo Vantage
+
+Stops Vantage and its associated services. This is required for full LLT control, especially for RGB keyboards.
+
+### Disable Legion Zone
+
+Stops Legion Zone from running in the background.
+
+### Disable Lenovo Hotkeys (Fn Keys)
+
+Stops the Lenovo Hotkeys service. When Hotkeys is disabled, LLT can handle notifications for Fn key actions, Smart Key assignments, and refresh rate exclusions.
+
+<Note>
+Disabling these services does not uninstall them. You can re-enable them at any time from Settings.
+</Note>
+
+## Keyboard and input
+
+### Smart Fn Lock
+
+Automatically toggles Fn Lock based on a held modifier key. Options are **Off**, **Alt**, and **Alt+Ctrl+Shift**.
+
+### Smart Key actions
+
+Assigns action pipelines to the Smart Key button (single press and double press). Only shown when Lenovo Hotkeys is disabled.
+
+### Custom Mode accessible via Fn+Q
+
+On supported devices, this toggle makes Custom (God) Mode accessible by cycling through power modes with the Fn+Q shortcut. Only shown on compatible hardware.
+
+## Notifications
+
+Opens a sub-window to configure which events show a notification popup. Individual events you can toggle include:
+
+- Update available
+- Caps Lock / Num Lock
+- Fn Lock
+- Touchpad lock
+- Keyboard backlight change
+- Camera lock
+- Microphone mute
+- Power mode change
+- Refresh rate change
+- AC adapter connected/disconnected
+- Smart Key press
+- Automation actions
+
+Additional notification display settings:
+
+| Setting | Description |
+|---|---|
+| **Position** | Where on screen notifications appear (e.g., bottom center). |
+| **Duration** | How long notifications are shown (Normal, Short, Long). |
+| **Always on top** | Notifications appear above all other windows. |
+| **Show on all screens** | Notifications appear on every connected display. |
+
+## Power mode mapping
+
+Controls what happens to Windows power settings when you switch Legion power modes.
+
+| Option | Behavior |
+|---|---|
+| **Windows Power Mode** | Sets the corresponding Windows Power Mode (Best efficiency, Balanced, Best performance) when you switch Legion modes. |
+| **Windows Power Plan** | Switches a specific Windows Power Plan per Legion mode. |
+| **None** | No Windows power setting changes. |
+
+When **Windows Power Plan** is selected, a sub-window lets you map each Legion mode (Quiet, Balance, Performance, Custom) to a specific plan. A shortcut to the Windows Power Options control panel is also shown.
+
+## Display
+
+### Exclude refresh rates
+
+Opens a sub-window where you can hide specific refresh rates from appearing in the display controls. Useful if your monitor lists refresh rates you never use.
+
+### Synchronize brightness to all power plans
+
+When enabled, adjusting the display brightness applies the change across all Windows power plans, not just the currently active one.
+
+## Battery
+
+### Reset "on battery since" timer on reboot
+
+When enabled, the battery discharge timer resets each time the laptop reboots.
+
+## Updates
+
+### Check for updates
+
+Manually triggers an update check. Not shown when the `--disable-update-checker` argument is active.
+
+### Update check frequency
+
+Sets how often LLT checks for new versions automatically. Available options: **Per hour**, **Per 3 hours**, **Per 12 hours**, **Per day** (default), **Per week**, and **Per month**.
+
+## Integrations
+
+### HWiNFO integration
+
+Enables sharing LLT sensor data with [HWiNFO](https://www.hwinfo.com/) so readings like fan speed and power limits appear in HWiNFO's sensor list.
+
+### CLI interface
+
+Enables the IPC server that the `llt.exe` command-line tool communicates with. LLT must be running with this enabled for CLI commands to work. See [CLI overview](/cli/overview) for details.
+
+### Add llt.exe to PATH
+
+Adds the `llt.exe` executable to your system PATH environment variable for convenient access from any terminal.

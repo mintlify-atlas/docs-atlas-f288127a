@@ -1,0 +1,230 @@
+---
+title: "Triggers"
+description: "Complete reference for all available automation triggers in Lenovo Legion Toolkit."
+---
+
+A trigger defines the event that causes a pipeline to run. Each pipeline has exactly one trigger. When the triggering condition is met, LLT executes the pipeline's steps in order.
+
+<Note>
+  Most triggers also match the current system state when LLT starts or resumes from sleep. If the condition is already true at that point, the pipeline runs immediately.
+</Note>
+
+## Power
+
+<AccordionGroup>
+  <Accordion title="AC adapter connected">
+    Fires when the AC power adapter is plugged in.
+
+    Also matches at startup/resume if the adapter is currently connected.
+  </Accordion>
+
+  <Accordion title="AC adapter disconnected">
+    Fires when the AC power adapter is unplugged and the system switches to battery power.
+
+    Also matches at startup/resume if no adapter is currently connected.
+  </Accordion>
+
+  <Accordion title="Low wattage AC adapter connected">
+    Fires when the connected adapter is detected as low wattage (insufficient to charge at full rate). The standard AC adapter connected condition is also true in this state.
+
+    Also matches at startup/resume if a low-wattage adapter is currently connected.
+  </Accordion>
+
+  <Accordion title="Power mode changed">
+    Fires when the Legion power mode changes. You configure which specific power mode (Quiet, Balance, Performance, or Custom) this trigger responds to.
+
+    Also matches at startup/resume if the current power mode matches the configured one.
+  </Accordion>
+</AccordionGroup>
+
+## Display
+
+<AccordionGroup>
+  <Accordion title="Display on">
+    Fires when the display turns on (for example, after the screen saver deactivates or the system wakes from display sleep).
+
+    Also matches at startup/resume if the display is currently on.
+  </Accordion>
+
+  <Accordion title="Display off">
+    Fires when the display turns off (for example, after the screen-off timeout).
+
+    Also matches at startup/resume if the display is currently off.
+  </Accordion>
+
+  <Accordion title="External display connected">
+    Fires when an external monitor is connected.
+
+    Also matches at startup/resume if an external display is currently connected.
+  </Accordion>
+
+  <Accordion title="External display disconnected">
+    Fires when an external monitor is disconnected.
+
+    Also matches at startup/resume if no external display is currently connected.
+  </Accordion>
+
+  <Accordion title="HDR on">
+    Fires when HDR is enabled on any display.
+
+    Also matches at startup/resume if HDR is currently enabled.
+  </Accordion>
+
+  <Accordion title="HDR off">
+    Fires when HDR is disabled.
+
+    Also matches at startup/resume if HDR is currently disabled.
+  </Accordion>
+</AccordionGroup>
+
+## Lid
+
+<AccordionGroup>
+  <Accordion title="Lid opened">
+    Fires when the laptop lid is opened.
+
+    Also matches at startup/resume if the lid is currently open.
+  </Accordion>
+
+  <Accordion title="Lid closed">
+    Fires when the laptop lid is closed.
+
+    Also matches at startup/resume if the lid is currently closed.
+  </Accordion>
+</AccordionGroup>
+
+## System events
+
+<AccordionGroup>
+  <Accordion title="On startup">
+    Fires once each time LLT starts. This trigger does not match any ongoing state — it runs exactly once per LLT launch.
+
+    Useful for setting up a consistent configuration every time LLT loads.
+  </Accordion>
+
+  <Accordion title="On resume">
+    Fires each time the system resumes from sleep or hibernation.
+
+    Useful for reapplying settings that may be reset by the system during sleep.
+  </Accordion>
+
+  <Accordion title="Session lock">
+    Fires when the Windows session is locked (e.g. Win+L or automatic lock).
+
+    Also matches at startup/resume if the session is currently locked.
+  </Accordion>
+
+  <Accordion title="Session unlock">
+    Fires when the Windows session is unlocked.
+
+    Also matches at startup/resume if the session is currently unlocked.
+  </Accordion>
+</AccordionGroup>
+
+## Applications
+
+<AccordionGroup>
+  <Accordion title="Games are running">
+    Fires when a game from your configured game library starts running.
+
+    Also matches at startup/resume if a game is currently running.
+
+    <Note>
+      For game detection to work, you must add games to the game library in LLT. LLT does not automatically detect all executables as games.
+    </Note>
+  </Accordion>
+
+  <Accordion title="Games stop">
+    Fires when all games from your configured game library stop running.
+
+    Also matches at startup/resume if no game is currently running.
+  </Accordion>
+
+  <Accordion title="Processes are running">
+    Fires when any of the configured processes start. You specify a list of process names (e.g. `chrome.exe`, `code.exe`) and the trigger fires when at least one of them is detected.
+
+    Also matches at startup/resume if any of the configured processes are currently running.
+  </Accordion>
+
+  <Accordion title="Processes stop running">
+    Fires when all of the configured processes stop running.
+
+    Also matches at startup/resume if none of the configured processes are currently running.
+  </Accordion>
+</AccordionGroup>
+
+## Network
+
+<AccordionGroup>
+  <Accordion title="Wi-Fi connected">
+    Fires when Wi-Fi connects to a network. You can optionally filter by one or more SSIDs — leaving the list empty matches any network.
+
+    Also matches at startup/resume if Wi-Fi is currently connected (and the SSID matches, if configured).
+  </Accordion>
+
+  <Accordion title="Wi-Fi disconnected">
+    Fires when Wi-Fi disconnects from a network.
+
+    Also matches at startup/resume if Wi-Fi is currently disconnected.
+  </Accordion>
+</AccordionGroup>
+
+## Device events
+
+<AccordionGroup>
+  <Accordion title="Device connected">
+    Fires when a USB or other device is connected to the system.
+  </Accordion>
+
+  <Accordion title="Device disconnected">
+    Fires when a USB or other device is disconnected from the system.
+  </Accordion>
+</AccordionGroup>
+
+## Time-based
+
+<AccordionGroup>
+  <Accordion title="Time">
+    Fires at a specific time of day. Configure the exact time in HH:mm format and optionally restrict to specific days of the week (Monday through Sunday). You can also set it to fire at sunrise or sunset based on your location.
+
+    Also matches at startup/resume if the current time matches the configured time.
+  </Accordion>
+
+  <Accordion title="Periodic">
+    Fires on a repeating interval. You configure the period (e.g. every 5 minutes). LLT checks if the current time in minutes is evenly divisible by the configured period.
+
+    Useful for polling-style automations that should run at regular intervals throughout the day.
+  </Accordion>
+
+  <Accordion title="User inactivity">
+    Fires after the user has been inactive for a configured duration. Also supports firing when activity resumes (zero inactivity duration).
+
+    Useful for reducing power consumption when the laptop is unattended.
+  </Accordion>
+</AccordionGroup>
+
+## Custom Mode (God Mode)
+
+<AccordionGroup>
+  <Accordion title="God Mode preset changed">
+    Fires when a specific Custom Mode (God Mode) preset becomes active. You configure which preset ID this trigger responds to.
+
+    Also matches at startup/resume if the selected preset is currently active.
+
+    <Note>
+      This trigger requires a device that supports Custom Mode (God Mode). Only relevant if your laptop has this capability.
+    </Note>
+  </Accordion>
+</AccordionGroup>
+
+## Combining triggers
+
+<AccordionGroup>
+  <Accordion title="And (combine triggers)">
+    Combines multiple triggers so that the pipeline fires when **any one** of the sub-triggers fires, but only if **all other** sub-trigger conditions are currently true at that moment.
+
+    For example: "AC adapter connected AND a game is currently running" — the pipeline fires when the adapter is plugged in, but only if a game is already running at that time.
+
+    The And trigger is useful when you want fine-grained control that a single trigger cannot express on its own.
+  </Accordion>
+</AccordionGroup>

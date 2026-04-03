@@ -1,0 +1,115 @@
+---
+title: "CLI overview"
+description: "Control Lenovo Legion Toolkit from the command line without Administrator privileges."
+---
+
+The Lenovo Legion Toolkit CLI (`llt.exe`) lets you drive LLT from a terminal, shell script, or any program that can invoke a subprocess. You can run Quick Actions, read and write feature values, and control RGB lighting — all without opening the LLT window.
+
+<Note>
+LLT must be running in the background **and** the CLI option must be enabled in **Settings** for any CLI command to work. The CLI does not start LLT for you.
+</Note>
+
+## Requirements
+
+- LLT is installed and running in the background (check the system tray).
+- **CLI** is enabled in LLT **Settings**.
+- No Administrator privileges are required.
+
+## Locating llt.exe
+
+`llt.exe` is installed alongside the main application. The default install path is:
+
+```text
+%LOCALAPPDATA%\Programs\LenovoLegionToolkit\
+```
+
+You can run it from that directory directly:
+
+```bash
+"%LOCALAPPDATA%\Programs\LenovoLegionToolkit\llt.exe" --help
+```
+
+## Enabling the CLI
+
+<Steps>
+  <Step title="Open LLT Settings">
+    Click the gear icon in the top-right corner of the LLT window.
+  </Step>
+  <Step title="Enable the CLI option">
+    Find the **CLI** toggle and turn it on. LLT will begin accepting connections from `llt.exe`.
+  </Step>
+  <Step title="Verify the connection">
+    Run a quick test from your terminal:
+
+    ```bash
+    llt.exe feature --list
+    ```
+
+    If you see a list of features, the CLI is working. If you get a connection error, confirm LLT is running and the CLI setting is enabled.
+  </Step>
+</Steps>
+
+## Adding llt.exe to PATH
+
+Adding the install directory to your `PATH` environment variable lets you type `llt` from any terminal instead of using the full path.
+
+<Steps>
+  <Step title="Open System Properties">
+    Press **Win + R**, type `sysdm.cpl`, and press **Enter**. Go to the **Advanced** tab and click **Environment Variables**.
+  </Step>
+  <Step title="Edit the Path variable">
+    Under **User variables**, select **Path** and click **Edit**, then click **New**.
+  </Step>
+  <Step title="Add the install directory">
+    Paste the install directory path:
+
+    ```text
+    %LOCALAPPDATA%\Programs\LenovoLegionToolkit
+    ```
+
+    Click **OK** on all dialogs.
+  </Step>
+  <Step title="Restart your terminal">
+    Close and reopen any open terminal windows for the change to take effect.
+  </Step>
+</Steps>
+
+<Tip>
+After adding to PATH, you can run `llt --help` from anywhere to confirm the executable is found.
+</Tip>
+
+## How the CLI communicates with LLT
+
+`llt.exe` connects to the running LLT process over a local inter-process communication (IPC) channel. Each invocation opens a connection, sends the command, and exits. LLT performs the actual hardware operation and returns the result.
+
+Because all commands go through the running LLT instance, they respect any LLT-level restrictions — for example, features unsupported on your hardware will return an error rather than silently failing.
+
+## Exit codes
+
+Every `llt.exe` invocation exits with one of the following codes:
+
+| Code | Meaning |
+|------|---------|
+| `0` | Command completed successfully. |
+| `-1` | Failed to connect — LLT is not running or the CLI setting is disabled. |
+| `-2` | IPC error — LLT received the command but it failed (for example, an unsupported feature or invalid value). |
+| `-99` | Unexpected error — an unhandled exception occurred. |
+
+<Warning>
+Exit code `-1` almost always means LLT is not running in the background or the CLI option is not enabled in Settings. Check both before investigating further.
+</Warning>
+
+Use the exit code in scripts to detect failure:
+
+```bash
+llt.exe feature set PowerMode Performance
+if %ERRORLEVEL% NEQ 0 (
+    echo Command failed with exit code %ERRORLEVEL%
+)
+```
+
+## Next steps
+
+<Card title="Command reference" icon="terminal" href="/cli/commands">
+  Full reference for all commands, subcommands, arguments, and flags.
+</Card>

@@ -1,0 +1,144 @@
+---
+title: "GPU Management"
+description: "Configure Hybrid Mode and GPU Working Modes, force-deactivate an idle discrete GPU, and overclock your NVIDIA GPU — all without Vantage or Legion Zone."
+---
+
+LLT gives you direct control over how your discrete GPU (dGPU) is connected and used, letting you trade off battery life against performance. On NVIDIA systems, LLT also provides GPU activity monitoring and basic overclocking support.
+
+<Note>
+  Hybrid Mode and GPU Working Mode options in LLT are **not** Advanced Optimus and operate independently of it. These settings work through the embedded controller (EC), not the display mux.
+</Note>
+
+## Hybrid Mode & GPU Working Modes
+
+<Tabs>
+  <Tab title="Hybrid Mode On (Default)">
+    The internal laptop display is connected to the **integrated GPU (iGPU)**. The discrete GPU activates on demand when an application requests it and powers off when idle.
+
+    **Best for:** Battery life while retaining GPU access for demanding apps.
+  </Tab>
+  <Tab title="Hybrid Mode Off (dGPU Direct)">
+    The internal display is connected directly to the **discrete GPU**. The dGPU is always on.
+
+    **Best for:** Maximum performance with no rendering overhead from the iGPU, at the cost of significantly shorter battery life.
+  </Tab>
+  <Tab title="iGPU Only (Gen 7/8+)">
+    The discrete GPU is **fully disconnected** from the system — similar to ejecting a USB device. The dGPU draws no power.
+
+    **Best for:** Maximizing battery life when GPU compute or rendering is not needed at all.
+
+    Available on Gen 7 (MY2022) and Gen 8 (MY2023) laptops.
+  </Tab>
+  <Tab title="Auto (Gen 7/8+)">
+    Automatically disconnects the dGPU when running on battery and reconnects it when the AC adapter is plugged back in.
+
+    **Best for:** A hands-off balance between battery life and performance availability.
+
+    Available on Gen 7 (MY2022) and Gen 8 (MY2023) laptops.
+  </Tab>
+</Tabs>
+
+### Hybrid Mode States (Enum Reference)
+
+| State        | Internal Name    | Description                                              |
+|--------------|-----------------|----------------------------------------------------------|
+| On           | `HybridModeState.On`         | iGPU drives display; dGPU on demand          |
+| On — iGPU Only | `HybridModeState.OnIGPUOnly` | dGPU fully disconnected (Gen 7/8+)           |
+| On — Auto    | `HybridModeState.OnAuto`     | dGPU disconnects on battery, reconnects on AC (Gen 7/8+) |
+| Off          | `HybridModeState.Off`        | dGPU drives display directly                 |
+
+### Switching Requires a Restart
+
+<Warning>
+  Changing the Hybrid Mode or GPU Working Mode **requires a system restart** to take effect. LLT will prompt you to restart after applying the change.
+</Warning>
+
+### Reliability Notes
+
+All Hybrid Mode settings use built-in EC firmware functions. Changes are not instantaneous — the EC may take up to **10 seconds** to wake the dGPU when switching back to Hybrid Mode. LLT attempts to mitigate EC failures by suppressing rapid switching and retrying dGPU wake-up automatically.
+
+If you encounter consistent problems, an experimental GPU Working Mode method (modeled on Legion Zone's implementation) is available:
+
+```sh
+# Add to %LOCALAPPDATA%\LenovoLegionToolkit\args.txt
+--experimental-gpu-working-mode
+```
+
+No support is provided when using the experimental method.
+
+<Warning>
+  **Disabling the dGPU via Windows Device Manager does NOT disconnect it** and will cause high idle power consumption. Always use LLT's Hybrid Mode controls to properly disconnect the GPU.
+</Warning>
+
+## Deactivating an Idle Discrete GPU
+
+Even in Hybrid Mode, some processes can keep the dGPU active after you disconnect an external monitor or close a GPU-accelerated application. This prevents the dGPU from powering off and wastes battery.
+
+LLT's **Deactivate GPU** button forces the dGPU to idle by using one of two methods:
+
+<AccordionGroup>
+  <Accordion title="Kill processes on dGPU (recommended)">
+    Terminates all processes currently running on the discrete GPU. Once no processes are using the dGPU, it can power off. This method is generally more reliable.
+  </Accordion>
+  <Accordion title="Temporarily disable the dGPU">
+    Briefly disables the GPU via the driver, causing Windows to migrate all running processes to the iGPU. The dGPU is then re-enabled in a powered-off state.
+
+    Some applications may crash when they are forcibly moved to a different GPU.
+  </Accordion>
+</AccordionGroup>
+
+The Deactivate button is only enabled when **all** of the following conditions are met:
+
+- Hybrid Mode is enabled (dGPU is not in direct mode)
+- The dGPU is currently **Active** (not already powered off)
+- No external monitors are connected to the dGPU
+
+Hover over the Deactivate button to see the current dGPU P-state and a list of processes running on it.
+
+### GPU States (Enum Reference)
+
+| State              | Meaning                                                      |
+|--------------------|--------------------------------------------------------------|
+| `Unknown`          | GPU state cannot be determined                               |
+| `NvidiaGpuNotFound` | No NVIDIA GPU detected in the system                        |
+| `MonitorConnected` | An external display is connected directly to the dGPU        |
+| `Active`           | dGPU is powered on and processing workloads                  |
+| `Inactive`         | dGPU is powered on but idle (no active workloads)            |
+| `PoweredOff`       | dGPU is fully powered off — optimal for battery life         |
+
+## Overclocking the NVIDIA GPU
+
+LLT includes a basic GPU overclock feature comparable to the one in Lenovo Vantage. It is intended as a simple, integrated option and is **not** a replacement for dedicated tools like MSI Afterburner.
+
+### Prerequisites
+
+<Warning>
+  Before using GPU overclocking, make sure **GPU overclocking is enabled in your BIOS**. If your laptop has a "GPU Overclocking" toggle in BIOS, it must be set to Enabled.
+</Warning>
+
+- Lenovo Vantage and Legion Zone must **not** be running. Overclocking will not work if either is active in the background.
+- Do not combine LLT's OC feature with other GPU overclocking tools at the same time.
+- If you customized your LLT Dashboard layout, you may need to add the GPU overclock control manually.
+
+### Recovering from an Unstable Overclock
+
+If the GPU overclock causes instability and you cannot boot into Windows normally:
+
+1. **BIOS method** — Enter BIOS, find the "GPU Overclocking" option, disable it, boot Windows, then re-enable it in BIOS.
+2. **Safe Mode method** — Boot into Windows Safe Mode and delete the overclock settings file:
+   ```
+   %LOCALAPPDATA%\LenovoLegionToolkit\gpu_oc.json
+   ```
+
+## Automation with Actions
+
+Hybrid Mode switching can be triggered automatically via LLT Actions using the `--enable-hybrid-mode-automation` argument:
+
+```sh
+# Add to %LOCALAPPDATA%\LenovoLegionToolkit\args.txt
+--enable-hybrid-mode-automation
+```
+
+<Warning>
+  Hybrid Mode automation is an unsupported experimental feature. Frequent programmatic switching can cause EC instability. No support is provided when this argument is used.
+</Warning>
